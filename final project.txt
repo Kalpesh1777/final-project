@@ -1,0 +1,77 @@
+import random
+
+# Define word categories
+word_categories = {
+    "Animals": ["elephant", "tiger", "monkey", "giraffe", "lion"],
+    "Countries": ["india", "usa", "china", "canada", "brazil"],
+    "Fruits": ["apple", "banana", "orange", "grape", "mango"]
+}
+
+# Function to choose a word from a category
+def choose_word(category):
+    words = word_categories.get(category)
+    if words:
+        return random.choice(words)
+    else:
+        return None
+
+# Function to display the current status of the word
+def display_word(word, guessed_letters):
+    display = ""
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter + " "
+        else:
+            display += "_ "
+    print(display)
+
+# Function to get a hint
+def get_hint(word):
+    hint_index = random.randint(0, len(word) - 1)
+    return word[hint_index]
+
+# Main function to play the game
+def play_hangman():
+    print("Welcome to Hangman!")
+    category = input("Choose a category (Animals, Countries, Fruits): ").capitalize()
+    if category not in word_categories:
+        print("Invalid category!")
+        return
+
+    word = choose_word(category)
+    if not word:
+        print("No words available in this category!")
+        return
+
+    guessed_letters = []
+    max_attempts = 6
+    attempts = 0
+
+    while True:
+        print("\nCurrent word:")
+        display_word(word, guessed_letters)
+        if "_" not in display_word(word, guessed_letters):
+            print("Congratulations! You guessed the word:", word)
+            break
+
+        guess = input("\nGuess a letter (or type 'hint' for a hint): ").lower()
+        if guess == "hint":
+            hint = get_hint(word)
+            print("Hint: The word contains the letter", hint)
+            continue
+
+        if guess in guessed_letters:
+            print("You've already guessed that letter!")
+            continue
+
+        guessed_letters.append(guess)
+        if guess not in word:
+            attempts += 1
+            print("Incorrect guess! Attempts remaining:", max_attempts - attempts)
+
+        if attempts >= max_attempts:
+            print("Sorry, you ran out of attempts! The word was:", word)
+            break
+
+# Run the game
+play_hangman()
